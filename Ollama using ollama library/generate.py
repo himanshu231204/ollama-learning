@@ -7,3 +7,7 @@ response = ollama.generate(
 )
 
 print(response)
+
+print('\n')
+
+print(response['response'])
