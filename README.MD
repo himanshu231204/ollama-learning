@@ -27,7 +27,7 @@
   - [Set Up the Python Environment](#3-set-up-the-python-environment)
 - [Usage](#usage)
   - [CLI Quick Start](#cli-quick-start)
-  - [Python Library Example](#python-library-example)
+  - [Python Library Examples](#python-library-examples)
 - [Learning Resources](#learning-resources)
   - [Understanding LLMs](#understanding-llms)
   - [Why Run LLMs Locally?](#why-run-llms-locally)
@@ -37,6 +37,7 @@
   - [GGUF Format](#gguf-format)
   - [System Architecture](#system-architecture)
 - [CLI Cheat Sheet](#cli-cheat-sheet)
+- [Modelfile Documentation](#modelfile-documentation)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -65,10 +66,13 @@ Whether you are new to local LLM inference or looking to deepen your understandi
 ```
 ollama-learning/
 ├── README.MD                          # Project overview & learning guide
-├── Docs/
-│   └── Ollama_Cli_command.txt         # Full Ollama CLI cheat sheet
-└── Ollama using ollama library/
-    └── generate.py                    # Python example: generate text with Ollama
+├── generate.py                        # Python example: generate text with Ollama
+├── streaming.py                       # Python example: streaming chat responses
+├── structure_output.py                # Python example: structured JSON output
+├── modelfile.py                       # Python example: working with Modelfiles
+└── Docs/
+    ├── ollama_cli_cheatsheet.md       # Full Ollama CLI cheat sheet
+    └── MODELFILE.md                   # Complete Modelfile learning guide
 ```
 
 ---
@@ -144,9 +148,9 @@ ollama rm mistral
 
 > 💡 See the full [CLI Cheat Sheet](#cli-cheat-sheet) below for every available command.
 
-### Python Library Example
+### Python Library Examples
 
-The script in `Ollama using ollama library/generate.py` demonstrates basic text generation:
+#### Basic Text Generation (`generate.py`)
 
 ```python
 import ollama
@@ -159,10 +163,45 @@ response = ollama.generate(
 print(response["response"])
 ```
 
-Run it with:
+```bash
+python generate.py
+```
+
+#### Streaming Chat Responses (`streaming.py`)
+
+```python
+from ollama import chat
+
+stream = chat(
+    model="mistral",
+    messages=[{"role": "user", "content": "What is 17 × 23?"}],
+    stream=True,
+)
+
+for chunk in stream:
+    if chunk.message.content:
+        print(chunk.message.content, end="", flush=True)
+```
 
 ```bash
-python "Ollama using ollama library/generate.py"
+python streaming.py
+```
+
+#### Structured JSON Output (`structure_output.py`)
+
+```python
+from ollama import chat
+
+response = chat(
+    model='mistral',
+    messages=[{'role': 'user', 'content': 'Tell me about Canada.'}],
+    format='json'
+)
+print(response.message.content)
+```
+
+```bash
+python structure_output.py
 ```
 
 ---
@@ -270,67 +309,78 @@ v
 |
 v
 Token Generation
+```
 
-Now integrating all concepts:
+How these concepts work together:
 
-Quantization → Smaller Weights
-
-Smaller Weights → Less RAM
-
-Less RAM → Faster Memory Transfer
-
-Memory Mapping → Load only needed chunks
-
-Efficient Memory + Smaller Weights → Higher Speed
-
-Higher Speed + Local Execution → Better Developer Experience
+- **Quantization** → Smaller weights → Less RAM
+- **Memory Mapping** → Load only needed chunks → Faster startup
+- **Efficient Memory + Smaller Weights** → Higher speed + Local execution → Better developer experience
 
 ---
 
-# 1️⃣1️⃣ Practical Impact for AI Development
+### Practical Impact for AI Development
 
 Understanding these concepts allows you to:
 
-* Choose correct model size
+* Choose the correct model size
 * Decide quantization level
 * Estimate RAM needs
 * Optimize latency
 * Build efficient AI agents
 * Design RAG systems properly
 
-If you ignore these:
-
-* System may crash
-* Latency may be high
-* Model may be too slow
-* Hardware may be insufficient
-
 ---
 
-# 1️⃣2️⃣ Final Deep Summary
+### Summary
 
 Ollama is a local LLM runtime that executes quantized models stored in GGUF format.
 
-LLM Speed depends on:
+**LLM speed** depends on model size, hardware, quantization, and context length.
 
-* Model size
-* Hardware
-* Quantization
-* Context length
+**Efficiency** depends on resource utilization, memory management, and architectural optimization.
 
-Efficiency depends on:
+**Memory mapping** allows large model files to be accessed without loading fully into RAM.
 
-* Resource utilization
-* Memory management
-* Architectural optimization
+**Quantization** compresses weights by reducing numerical precision, drastically reducing memory usage and increasing speed.
 
-Memory Mapping allows large model files to be accessed without loading fully into RAM.
-
-Quantization compresses weights by reducing numerical precision, drastically reducing memory usage and increasing speed.
-
-GGUF is an optimized binary format that supports quantization and memory mapping.
+**GGUF** is an optimized binary format that supports quantization and memory mapping.
 
 Together, these form the foundation of modern local GenAI execution systems.
 
 ---
+
+## CLI Cheat Sheet
+
+For a comprehensive reference of all Ollama CLI commands, interactive session commands, parameter configuration, and common workflows, see the full cheat sheet:
+
+📄 **[Ollama CLI Cheat Sheet](Docs/ollama_cli_cheatsheet.md)**
+
+---
+
+## Modelfile Documentation
+
+Learn how to create and customize Ollama Modelfiles — configuration files that let you define base models, system prompts, parameters, and more:
+
+📄 **[Modelfile Learning Guide](Docs/MODELFILE.md)**
+
+---
+
+## Contributing
+
+Contributions are welcome! If you'd like to improve this project:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -m 'Add your feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a Pull Request
+
+Feel free to open an issue for suggestions, corrections, or new topics you'd like to see covered.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
 
