@@ -28,6 +28,10 @@
 - [Usage](#usage)
   - [CLI Quick Start](#cli-quick-start)
   - [Python Library Examples](#python-library-examples)
+    - [Basic Text Generation](#basic-text-generation-generatepy)
+    - [Streaming Chat Responses](#streaming-chat-responses-streamingpy)
+    - [Structured JSON Output](#structured-json-output-structure_outputpy)
+    - [Modelfile Template](#modelfile-template-modelfiletxt)
 - [Learning Resources](#learning-resources)
   - [Understanding LLMs](#understanding-llms)
   - [Why Run LLMs Locally?](#why-run-llms-locally)
@@ -69,7 +73,9 @@ ollama-learning/
 ├── generate.py                        # Python example: generate text with Ollama
 ├── streaming.py                       # Python example: streaming chat responses
 ├── structure_output.py                # Python example: structured JSON output
-├── modelfile.py                       # Python example: working with Modelfiles
+├── modelfile.txt                      # Ollama Modelfile template for Mistral
+├── test.py                            # Scratch file: basic Python variable and type printing
+├── text.py                            # Scratch file: basic Python value and type check
 └── Docs/
     ├── ollama_cli_cheatsheet.md       # Full Ollama CLI cheat sheet
     └── MODELFILE.md                   # Complete Modelfile learning guide
@@ -178,9 +184,14 @@ stream = chat(
     stream=True,
 )
 
+content = ""
+
 for chunk in stream:
     if chunk.message.content:
         print(chunk.message.content, end="", flush=True)
+        content += chunk.message.content
+
+print("\n\nFinal Answer:", content)
 ```
 
 ```bash
@@ -203,6 +214,20 @@ print(response.message.content)
 ```bash
 python structure_output.py
 ```
+
+#### Modelfile Template (`modelfile.txt`)
+
+The `modelfile.txt` file contains a full Ollama Modelfile exported from the Mistral model. It includes the model's prompt template, stop parameters, and the Apache 2.0 license text. You can use it as a reference to understand Ollama Modelfile syntax or as a starting point for building a custom model:
+
+```bash
+# Inspect the Modelfile
+cat modelfile.txt
+
+# Use it to create a custom Ollama model
+ollama create my-mistral -f modelfile.txt
+```
+
+> 📄 For a full guide on creating your own Modelfiles, see **[Modelfile Learning Guide](Docs/MODELFILE.md)**.
 
 ---
 
