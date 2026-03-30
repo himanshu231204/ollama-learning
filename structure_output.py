@@ -6,3 +6,4 @@ response = chat(
   format='json'
 )
 print(response.message.content)
+print(response.message.metadata)
