@@ -14,3 +14,4 @@ for chunk in stream:
         content += chunk.message.content
 
 print("\n\nFinal Answer:", content)
+print('hello world')
